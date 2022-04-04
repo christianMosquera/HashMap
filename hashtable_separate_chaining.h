@@ -76,7 +76,7 @@ size_t HashTable<Key, Hash>::bucket_count() const {
     return bucket;
 }
 
-template <class Key, class Hash>
+
 
 
 #endif  // HASHTABLE_SEPARATE_CHAINING_H
