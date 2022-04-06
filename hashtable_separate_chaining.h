@@ -20,11 +20,16 @@ public:
 private:
     // TODO: student implementation
     std::vector<std::list<value_type>> hashmap;
-    size_t bucket_num;
     size_t count;
     float currentLoad;
     float maxLoad;
 
+
+    //---------------------------------------
+    // Name: PrimeTest
+    // PreCondition:  num is given
+    // PostCondition: Returns true if num is prime
+    //---------------------------------------
     bool PrimeTest(size_t num) const {
 
         if (num == 2 || num == 3) {
@@ -46,6 +51,12 @@ private:
         return true;
     }
 
+
+    //---------------------------------------
+    // Name: nextPrime
+    // PreCondition:  num is given
+    // PostCondition: Returns the next prime number after num
+    //---------------------------------------
     size_t nextPrime(size_t num) {
 
         if (num == 1) {
@@ -56,8 +67,8 @@ private:
         bool prime = false;
 
         while (!prime) {
-            num++; 
-            prime = PrimeTest(num);
+            primeNum++; 
+            prime = PrimeTest(primeNum);
         }
 
         return primeNum;
@@ -66,15 +77,30 @@ private:
     
 public:
 
-    HashTable() : hashmap(11), bucket_num(11), count(0), currentLoad(0), maxLoad(1) {}
+
+    //---------------------------------------
+    // Name: Default constructor
+    //---------------------------------------
+    HashTable() : hashmap(11), count(0), currentLoad(0), maxLoad(1) {}
 
 
-    HashTable(const HashTable& other) : hashmap(other.hashmap), bucket_num(other.bucket_num), count(other.count), currentLoad(other.currentLoad), maxLoad(other.maxLoad) {}
+    //---------------------------------------
+    // Name: Copy constructor
+    //---------------------------------------
+    HashTable(const HashTable& other) : hashmap(other.hashmap), count(other.count), currentLoad(other.currentLoad), maxLoad(other.maxLoad) {}
 
 
+    //---------------------------------------
+    // Name: Destructor
+    //---------------------------------------
     ~HashTable() {}
 
 
+    //---------------------------------------
+    // Name: Copy assignment
+    // PreCondition:  other is given
+    // PostCondition: A deep copied hashtable
+    //---------------------------------------
     HashTable& operator=(const HashTable& other) {
 
         if (this == &other) {
@@ -82,7 +108,6 @@ public:
         }
 
         this->hashmap = other.hashmap;
-        this->bucket_num = other.bucket_num;
         this->count = other.count;
         this->currentLoad = other.currentLoad;
         this->maxLoad = other.maxLoad;
@@ -92,24 +117,56 @@ public:
     }
 
 
-    HashTable(size_type buckets) : hashmap(buckets), bucket_num(buckets), count(0), currentLoad(0), maxLoad(1) {}
+    //---------------------------------------
+    // Name: bucket parameter constructor
+    // PreCondition:  buckets is given
+    // PostCondition: A hashmap with number of buckets allocated
+    //---------------------------------------
+    HashTable(size_type buckets) : hashmap(buckets), count(0), currentLoad(0), maxLoad(1) {}
     
 
+    //---------------------------------------
+    // Name: is_empty
+    // PreCondition:  hashtable exists
+    // PostCondition: True if hashtable is empty
+    //---------------------------------------
     bool is_empty() const {
         return count == 0;
     }
 
 
+    //---------------------------------------
+    // Name: size
+    // PreCondition:  Hashtable exists
+    // PostCondition: Number of elements in hashtable
+    //---------------------------------------
     size_t size() const {
         return count;
     }
 
 
+    //---------------------------------------
+    // Name: make_empty
+    // PreCondition:  Hashmap exists
+    // PostCondition: Makes the hashmap empty
+    //---------------------------------------
     void make_empty() {
-        hashmap.clear();
+
+        // clear vector and set count to 0
+        for (auto& l : hashmap) {
+            l.clear();
+        }
+        this->count = 0;
+        this->currentLoad = 0;
+
     }
 
 
+    //---------------------------------------
+    // Name: insert
+    // PreCondition:  value is given
+    // PostCondition: Inserts the value into the hashmap
+    //---------------------------------------
     bool insert(const value_type& value) {
         
         // if contains return false
@@ -117,29 +174,62 @@ public:
             return false;
         }
 
-        // if loadfactor is greater than max load factor
-        // re hash and fix
-        
-        // if (maxLoad < currentLoad) {
-        //     // rehash
-
-        // }
-        count++;
-        currentLoad = static_cast<float>(count) / bucket_num;
-        rehash
-        // if not already in hashmap
+        // add value to hashmap
         size_t index = bucket(value);
-        (hashmap[index]).push_back(value);
+        (hashmap[index]).push_front(value);
         
+        // update count and load
+        count++;
+        currentLoad = static_cast<float>(count) / hashmap.size();
 
+        // check to see if rehash is needed
+        if (maxLoad < currentLoad) {
+            
+            // finds the next prime number, to use for new number of buckets
+            size_t prime_num = nextPrime((hashmap.size() * 2));
+
+            // rehash according to new bucket count
+            rehash(prime_num);
+
+            return true;
+        }
+        
         return true;
 
     }
 
 
-    size_t remove(const key_type& key);
+    //---------------------------------------
+    // Name: remove
+    // PreCondition:  key is in hashmap
+    // PostCondition: Removes the key from hashmap
+    //---------------------------------------
+    size_t remove(const key_type& key) {
+
+        // check if in hashmap
+        if (!contains(key)) {
+            return 0;
+        }
+
+        // find key
+        size_t index = bucket(key);
+
+        // delete element
+        (hashmap[index]).remove(key);
+
+        // update load factor
+        count--;
+        currentLoad = static_cast<float>(count) / hashmap.size();
+
+        return 1;
+    }
 
 
+    //---------------------------------------
+    // Name: contains
+    // PreCondition:  key is given
+    // PostCondition: True if key is in hashmap
+    //---------------------------------------
     bool contains(const key_type& key) {
 
         // get the index of the list that the value is in
@@ -160,47 +250,169 @@ public:
 
     }
 
-    
+
+    //---------------------------------------
+    // Name: bucket_count
+    // PreCondition:  hashmap exists
+    // PostCondition: Returns the size of the vector (buckets)
+    //---------------------------------------
     size_t bucket_count() const {
-        return bucket_num;
+        return hashmap.size();
     }
 
 
+    //---------------------------------------
+    // Name: bucket_size
+    // PreCondition:  n is valid index of the hashmap
+    // PostCondition: Returns number of elements inside bucket
+    //---------------------------------------
     size_t bucket_size(size_t n) const {
+
+        // throws if invalid index
+        if (n > hashmap.size() || n < 0) {
+            throw std::invalid_argument("Not in bounds.");
+        }
+
         return (hashmap[n]).size();
-    }
+
+    } 
 
     
+    //---------------------------------------
+    // Name: bucket
+    // PreCondition:  key is given
+    // PostCondition: Returns key index for the key value
+    //---------------------------------------
     size_t bucket(const key_type& key) const {
         return Hash{}(key) % hashmap.size();
     }
 
 
+    //---------------------------------------
+    // Name: load_factor
+    // PreCondition:  hashmap exists
+    // PostCondition: Returns the current load of the hashmap
+    //---------------------------------------
     float load_factor() const {
         return currentLoad;
     }
 
 
+    //---------------------------------------
+    // Name: max_load_factor
+    // PreCondition:  hashmap exists
+    // PostCondition: Returns the max load factor of the hashmap
+    //---------------------------------------
     float max_load_factor() const {
         return maxLoad;
     }
 
 
+    //---------------------------------------
+    // Name: max_load_factor
+    // PreCondition:  mlf is given
+    // PostCondition: Sets the max load factorto mlf
+    //---------------------------------------
     void max_load_factor(float mlf) {
-        maxLoad = mlf;
-    }
 
-
-    void rehash(size_type count) {
-        if ((static_cast<float>(this->count) / count) > maxLoad) {
-            // find next prime
+        if (mlf <= 0) {
+            throw std::invalid_argument("Invalid max load factor.");
         }
-        // else set count to new number
-        bucket
+
+        maxLoad = mlf;
+
+        // check if new load factor is satisfied
+        if (maxLoad < currentLoad) {
+            
+            // find next prime number
+            size_t prime_num = nextPrime((hashmap.size() * 2));
+
+            // rehash
+            rehash(prime_num);
+
+        }
+
     }
 
 
-    void print_table(std::ostream& os=std::cout) const;
+    //---------------------------------------
+    // Name: rehash
+    // PreCondition:  count is given
+    // PostCondition: Rehashes the hashmap and makes it bigger
+    //---------------------------------------
+    void rehash(size_type count) {
+
+        // original size of hashmap
+        size_t original = hashmap.size();
+
+        // copy hashmap to rehash
+        auto copy = hashmap;
+
+        // resize the hashmap
+        hashmap.resize(count);
+
+        // rehash if not original size
+        if (hashmap.size() != original) {
+
+            // clear vector and set count to 0
+            for (auto& l : hashmap) {
+                l.clear();
+            }
+            this->count = 0;
+
+            // iterate through hashmap and insert into the cleared hashmap
+            for (auto l : copy) {
+
+                for(value_type v : l) {
+
+                    insert(v);
+
+                }
+
+            }
+
+        }    
+
+    }
+
+
+    //---------------------------------------
+    // Name: print_table
+    // PreCondition:  hashmap exists
+    // PostCondition: Prints out a nice representation of hashmap
+    //---------------------------------------
+    void print_table(std::ostream& os=std::cout) const {
+
+        // empty hashmap
+        if (this->count == 0) {
+            os << "<empty>\n";
+            return;
+        }
+
+        // index of vector
+        int i = 0;
+
+        // loop over the vector
+        for (auto l : hashmap) {
+
+            os << "[" << i << "] ";
+
+            // loop over the lists in the vector
+            for (value_type v : l) {
+
+                os << v; 
+
+                // print commas in between except for last element
+                if (l.back() != v) {
+                    os << ", ";
+                }
+
+            }
+
+            os << std::endl;
+            i++;
+        }
+    }
 
     // Optional
     // HashTable(HashTable&& other);
