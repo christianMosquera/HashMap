@@ -24,6 +24,45 @@ private:
     size_t count;
     float currentLoad;
     float maxLoad;
+
+    bool PrimeTest(size_t num) const {
+
+        if (num == 2 || num == 3) {
+            return true;
+        }
+
+        if (num <= 1 || num % 2 == 0 || num % 3 == 0) {
+            return false;
+        }
+            
+        for (int i = 5; i * i <= num; i += 6) {
+
+            if (num % i == 0 || num % (i + 2) == 0) {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    size_t nextPrime(size_t num) {
+
+        if (num == 1) {
+            return 2;
+        }
+
+        size_t primeNum = num;
+        bool prime = false;
+
+        while (!prime) {
+            num++; 
+            prime = PrimeTest(num);
+        }
+
+        return primeNum;
+
+    }
     
 public:
 
@@ -78,12 +117,20 @@ public:
             return false;
         }
 
+        // if loadfactor is greater than max load factor
+        // re hash and fix
+        
+        // if (maxLoad < currentLoad) {
+        //     // rehash
 
+        // }
+        count++;
+        currentLoad = static_cast<float>(count) / bucket_num;
+        rehash
         // if not already in hashmap
         size_t index = bucket(value);
         (hashmap[index]).push_back(value);
-        count++;
-        currentLoad = static_cast<float>(count) / bucket_num;
+        
 
         return true;
 
@@ -144,7 +191,13 @@ public:
     }
 
 
-    void rehash(size_type count);
+    void rehash(size_type count) {
+        if ((static_cast<float>(this->count) / count) > maxLoad) {
+            // find next prime
+        }
+        // else set count to new number
+        bucket
+    }
 
 
     void print_table(std::ostream& os=std::cout) const;

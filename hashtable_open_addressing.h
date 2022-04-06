@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 
+// use structs to store the data
+
 template <class Key, class Hash=std::hash<Key>>
 class HashTable {
 public:
