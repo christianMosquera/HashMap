@@ -28,7 +28,7 @@ private:
 public:
     HashTable() : hashmap(hashmap(11, std::list<value_type>())), bucket(11), count(0), currentLoad(0), maxLoad(1) {}
     HashTable(const HashTable& other);
-    ~HashTable();
+    ~HashTable() {}
     HashTable& operator=(const HashTable& other);
     HashTable(size_type buckets) : hashmap(hashmap(bucket, std::list<value_type>())), bucket(bucket), count(0), currentLoad(0), maxLoad(1) {}
     
