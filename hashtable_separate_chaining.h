@@ -40,7 +40,7 @@ private:
             return false;
         }
             
-        for (int i = 5; i * i <= num; i += 6) {
+        for (size_t i = 5; i * i <= num; i += 6) {
 
             if (num % i == 0 || num % (i + 2) == 0) {
                 return false;
@@ -269,8 +269,8 @@ public:
     size_t bucket_size(size_t n) const {
 
         // throws if invalid index
-        if (n > hashmap.size() || n < 0) {
-            throw std::invalid_argument("Not in bounds.");
+        if (n >= hashmap.size() || n < 0) {
+            throw std::out_of_range("Not in bounds.");
         }
 
         return (hashmap[n]).size();

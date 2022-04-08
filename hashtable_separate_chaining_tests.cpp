@@ -14,8 +14,8 @@ int main() {
 
     std::cout << "initial size is " << table.size() << std::endl;
     std::cout << "initial bucket count is " << table.bucket_count() << std::endl;
-    // std::cout << "initial load factor is " << table.load_factor() << std::endl;
-    // std::cout << "initial max load factor is " << table.max_load_factor() << std::endl;
+    std::cout << "initial load factor is " << table.load_factor() << std::endl;
+    std::cout << "initial max load factor is " << table.max_load_factor() << std::endl;
 
     std::cout << "insert several strings" << std::endl;   
     table.insert("And them who hold High Places");
@@ -39,69 +39,69 @@ int main() {
 
     std::cout << "size is " << table.size() << std::endl;
     std::cout << "bucket count is " << table.bucket_count() << std::endl;
-    // std::cout << "load factor is " << table.load_factor() << std::endl;
-    // std::cout << "max load factor is " << table.max_load_factor() << std::endl;
+    std::cout << "load factor is " << table.load_factor() << std::endl;
+    std::cout << "max load factor is " << table.max_load_factor() << std::endl;
 
-    // {
-    //     std::cout << "print the table" << std::endl;
-    //     std::stringstream ss;
-    //     table.print_table(ss);
-    //     std::cout << ss.str() << std::endl;
-    // }
+    {
+        std::cout << "print the table" << std::endl;
+        std::stringstream ss;
+        table.print_table(ss);
+        std::cout << ss.str() << std::endl;
+    }
 
-    // std::cout << "remove \"Philosophers and Plowmen\"" << std::endl;
-    // table.remove("Philosophers and Plowmen");
-    // std::cout << "remove \"Each must know their Part\"" << std::endl;
-    // table.remove("Each must know their Part");
+    std::cout << "remove \"Philosophers and Plowmen\"" << std::endl;
+    table.remove("Philosophers and Plowmen");
+    std::cout << "remove \"Each must know their Part\"" << std::endl;
+    table.remove("Each must know their Part");
 
-    // std::cout << "size is " << table.size() << std::endl;
-    // std::cout << "bucket count is " << table.bucket_count() << std::endl;
-    // std::cout << "load factor is " << table.load_factor() << std::endl;
-    // std::cout << "max load factor is " << table.max_load_factor() << std::endl;
+    std::cout << "size is " << table.size() << std::endl;
+    std::cout << "bucket count is " << table.bucket_count() << std::endl;
+    std::cout << "load factor is " << table.load_factor() << std::endl;
+    std::cout << "max load factor is " << table.max_load_factor() << std::endl;
 
-    // {
-    //     std::cout << "print the table" << std::endl;
-    //     std::stringstream ss;
-    //     table.print_table(ss);
-    //     std::cout << ss.str() << std::endl;
-    // }
+    {
+        std::cout << "print the table" << std::endl;
+        std::stringstream ss;
+        table.print_table(ss);
+        std::cout << ss.str() << std::endl;
+    }
 
-    // std::cout << "set max load factor to 2" << std::endl;
-    // table.max_load_factor(2);
-    // std::cout << "rehash the table to size 7" << std::endl;
-    // table.rehash(7);
+    std::cout << "set max load factor to 2" << std::endl;
+    table.max_load_factor(2);
+    std::cout << "rehash the table to size 7" << std::endl;
+    table.rehash(7);
 
-    // std::cout << "size is " << table.size() << std::endl;
-    // std::cout << "bucket count is " << table.bucket_count() << std::endl;
-    // std::cout << "load factor is " << table.load_factor() << std::endl;
-    // std::cout << "max load factor is " << table.max_load_factor() << std::endl;
+    std::cout << "size is " << table.size() << std::endl;
+    std::cout << "bucket count is " << table.bucket_count() << std::endl;
+    std::cout << "load factor is " << table.load_factor() << std::endl;
+    std::cout << "max load factor is " << table.max_load_factor() << std::endl;
 
-    // {
-    //     std::cout << "print the table" << std::endl;
-    //     std::stringstream ss;
-    //     table.print_table(ss);
-    //     std::cout << ss.str() << std::endl;
-    // }
+    {
+        std::cout << "print the table" << std::endl;
+        std::stringstream ss;
+        table.print_table(ss);
+        std::cout << ss.str() << std::endl;
+    }
 
-    // std::cout << "find \"The Blacksmith and the Artist\"" << std::endl;
-    // size_t index = table.bucket("The Blacksmith and the Artist");
-    // std::cout << " ==> bucket " << index << std::endl;
-    // std::cout << "     which has " << table.bucket_size(index) << " elements" << std::endl;
+    std::cout << "find \"The Blacksmith and the Artist\"" << std::endl;
+    size_t index = table.bucket("The Blacksmith and the Artist");
+    std::cout << " ==> bucket " << index << std::endl;
+    std::cout << "     which has " << table.bucket_size(index) << " elements" << std::endl;
 
-    // std::cout << "make the table empty" << std::endl;
-    // table.make_empty();
+    std::cout << "make the table empty" << std::endl;
+    table.make_empty();
 
-    // std::cout << "size is " << table.size() << std::endl;
-    // std::cout << "bucket count is " << table.bucket_count() << std::endl;
-    // std::cout << "load factor is " << table.load_factor() << std::endl;
-    // std::cout << "max load factor is " << table.max_load_factor() << std::endl;
+    std::cout << "size is " << table.size() << std::endl;
+    std::cout << "bucket count is " << table.bucket_count() << std::endl;
+    std::cout << "load factor is " << table.load_factor() << std::endl;
+    std::cout << "max load factor is " << table.max_load_factor() << std::endl;
 
-    // {
-    //     std::cout << "print the table" << std::endl;
-    //     std::stringstream ss;
-    //     table.print_table(ss);
-    //     std::cout << ss.str() << std::endl;
-    // }
+    {
+        std::cout << "print the table" << std::endl;
+        std::stringstream ss;
+        table.print_table(ss);
+        std::cout << ss.str() << std::endl;
+    }
     
     return 0;
 }
