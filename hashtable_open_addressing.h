@@ -116,9 +116,14 @@ private:
 public:
     enum Status {FULL, EMPTY, ACTIVE};
     HashTable() : hashmap(11), count (0), currentLoad(0), maxLoad(0.5) {}
-    HashTable(const HashTable& other) {}
+    HashTable(const HashTable& other) : hashmap(other.hashmap), count(other.count), currentLoad(other.currentLoad), maxLoad(other.maxLoad) {}
     ~HashTable() {}
-    HashTable& operator=(const HashTable& other) {}
+    HashTable& operator=(const HashTable& other) {
+        this->hashmap = other.hashmap;
+        this->count = other.count;
+        this->currentLoad = other.currentLoad;
+        this->maxLoad = other.maxLoad;
+    }
     HashTable(size_type cells) : hashmap(cells), count(0), currentLoad(0), maxLoad(0.5) {}
 
     bool is_empty() const {
@@ -135,6 +140,7 @@ public:
         for (Value& v : hashmap) {
             v.status = EMPTY;
         }
+        count = 0;
     }
     bool insert(const value_type& value) {
 
@@ -216,6 +222,7 @@ public:
                 i++;
             }
         }
+        count--;
     }
 
     bool contains(const key_type& key) {
