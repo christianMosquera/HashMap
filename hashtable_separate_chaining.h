@@ -269,8 +269,8 @@ public:
     size_t bucket_size(size_t n) const {
 
         // throws if invalid index
-        if (n > hashmap.size() || n < 0) {
-            throw std::invalid_argument("Not in bounds.");
+        if (n >= hashmap.size() || n < 0) {
+            throw std::out_of_range("Not in bounds.");
         }
 
         return (hashmap[n]).size();
