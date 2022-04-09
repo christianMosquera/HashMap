@@ -100,12 +100,14 @@ private:
 
             // clear vector and set count to 0
             make_empty();
-            this->count = 0;
+            // this->count = 0;
 
             // iterate through hashmap and insert into the cleared hashmap
             
             for (Value v : copy) {
-                insert(v.value);
+                if (v.status == FULL) {
+                    insert(v.value);
+                }
             }
 
         }    
@@ -119,10 +121,16 @@ public:
     HashTable(const HashTable& other) : hashmap(other.hashmap), count(other.count), currentLoad(other.currentLoad), maxLoad(other.maxLoad) {}
     ~HashTable() {}
     HashTable& operator=(const HashTable& other) {
+
+        if (this == &other) {
+            return *this;
+        }
         this->hashmap = other.hashmap;
         this->count = other.count;
         this->currentLoad = other.currentLoad;
         this->maxLoad = other.maxLoad;
+        return *this;
+        
     }
     HashTable(size_type cells) : hashmap(cells), count(0), currentLoad(0), maxLoad(0.5) {}
 
@@ -153,11 +161,10 @@ public:
         size_t index = position(value);
 
         // if current load greater than .5 rehash
-        count++;
-        currentLoad = static_cast<float>(count) / hashmap.size();
+        
 
         // check to see if full and insert if not
-        if ((hashmap[index]).status == EMPTY) {
+        if ((hashmap[index]).status != FULL) {
             // change value and status
             (hashmap[index]).value = value;
             (hashmap[index]).status = FULL;
@@ -167,7 +174,7 @@ public:
             int i = 1;
             while((hashmap[index]).status != EMPTY) {
                 index = (position(value) + (i * i)) % hashmap.size();
-                if ((hashmap[index]).status == EMPTY) {
+                if ((hashmap[index]).status != FULL) {
                     (hashmap[index]).value = value;
                     (hashmap[index]).status = FULL;
                     break;
@@ -178,6 +185,8 @@ public:
             }
         }
         
+        count++;
+        currentLoad = static_cast<float>(count) / hashmap.size();
 
         if (currentLoad > maxLoad) {
             // rehash
@@ -201,7 +210,8 @@ public:
 
         // find index
         size_t index = position(key);
-
+        count--;
+        currentLoad = static_cast<float>(count) / hashmap.size();
         // delete element
         if ((hashmap[index]).value == key) {
 
@@ -222,7 +232,7 @@ public:
                 i++;
             }
         }
-        count--;
+        return 1;
     }
 
     bool contains(const key_type& key) {
@@ -231,14 +241,14 @@ public:
         size_t index = position(key);
 
         // go to location
-        if (key == (hashmap[index]).value) {
+        if (key == (hashmap[index]).value && (hashmap[index]).status == FULL) {
             return true;
         }
 
         int i = 1;
         while ((hashmap[index]).status != EMPTY) {
             index = (position(key) + (i * i)) % hashmap.size();
-            if ((hashmap[index]).value == key) {
+            if ((hashmap[index]).value == key && (hashmap[index]).status == FULL) {
                 return true;
             }
             i++;
