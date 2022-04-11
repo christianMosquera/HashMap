@@ -5,7 +5,19 @@
 #include <iostream>
 #include <vector>
 
-// use structs to store the data
+/*****************************************************
+ **
+ ** File:    hashtable_open_addressing.h
+ ** Project: CSCE 221 Lab 6 Spring 2022
+ ** Author:  Christian Mosquera
+ ** Date:    04/11/22
+ ** Section: 510
+ ** Email:   cwbo.1701@tamu.edu
+ ** 
+ ** This file contains function definitions to the HashTable data
+ ** structure that uses open addressing as a collision protocol.
+ **
+ *****************************************************/
 
 template <class Key, class Hash=std::hash<Key>>
 class HashTable {
@@ -29,6 +41,9 @@ private:
     int count;
     float currentLoad;
     float maxLoad;
+
+    enum Status {FULL, EMPTY, ACTIVE};
+
 
     //---------------------------------------
     // Name: PrimeTest
@@ -56,6 +71,7 @@ private:
         return true;
     }
 
+
     //---------------------------------------
     // Name: nextPrime
     // PreCondition:  num is given
@@ -78,6 +94,7 @@ private:
         return primeNum;
 
     }
+
 
     //---------------------------------------
     // Name: rehash
@@ -116,18 +133,37 @@ private:
     
 
 public:
-    enum Status {FULL, EMPTY, ACTIVE};
+    
 
-
+    //---------------------------------------
+    // Name: Default constructor
+    // PreCondition:  Hashmap is provided
+    // PostCondition: Returns hashmap
+    //---------------------------------------
     HashTable() : hashmap(11), count (0), currentLoad(0), maxLoad(0.5) {}
 
 
+    //---------------------------------------
+    // Name: Copy constructor
+    // PreCondition:  Hashmap is provided
+    // PostCondition: Returns deep copied Hashmap
+    //---------------------------------------
     HashTable(const HashTable& other) : hashmap(other.hashmap), count(other.count), currentLoad(other.currentLoad), maxLoad(other.maxLoad) {}
 
 
+    //---------------------------------------
+    // Name: destructor
+    // PreCondition:  Hashmap is provided
+    // PostCondition: Destructs the hashmap
+    //---------------------------------------
     ~HashTable() {}
 
 
+    //---------------------------------------
+    // Name: operator=
+    // PreCondition:  Hashmap is provided
+    // PostCondition: Returns new hashtable
+    //---------------------------------------
     HashTable& operator=(const HashTable& other) {
 
         if (this == &other) {
@@ -142,24 +178,48 @@ public:
     }
 
 
+    //---------------------------------------
+    // Name: Parameter constructor
+    // PostCondition: Produces hashmap with cells as buckets
+    //---------------------------------------
     HashTable(size_type cells) : hashmap(cells), count(0), currentLoad(0), maxLoad(0.5) {}
 
 
+    //---------------------------------------
+    // Name: is_empty
+    // PreCondition:  Hashmap is provided
+    // PostCondition: Returns boolean indicating whether hashmap is empty
+    //---------------------------------------
     bool is_empty() const {
         return count == 0;
     }
 
 
+    //---------------------------------------
+    // Name: size
+    // PreCondition:  Hashmap is provided
+    // PostCondition: Returns the count of all the values
+    //---------------------------------------
     size_t size() const {
         return count;
     }
 
     
+    //---------------------------------------
+    // Name: table_size
+    // PreCondition:  Hashmap is provided
+    // PostCondition: Returns the size of the internal list
+    //---------------------------------------
     size_t table_size() const {
         return hashmap.size();
     }
 
 
+    //---------------------------------------
+    // Name: make_empty
+    // PreCondition:  hashmap is provided
+    // PostCondition: Returns an empty hashmap
+    //---------------------------------------
     void make_empty() {
         for (Value& v : hashmap) {
             v.status = EMPTY;
@@ -168,6 +228,11 @@ public:
     }
 
 
+    //---------------------------------------
+    // Name: insert
+    // PreCondition:  value is provided
+    // PostCondition: Inserts the value into the hashmap
+    //---------------------------------------
     bool insert(const value_type& value) {
 
         // if contains return false
@@ -202,6 +267,11 @@ public:
     }
 
 
+    //---------------------------------------
+    // Name: remove
+    // PreCondition: key is given 
+    // PostCondition: Removes the key from the hashmap
+    //---------------------------------------
     size_t remove(const key_type& key) {
 
         // check if in index
@@ -222,6 +292,11 @@ public:
     }
 
 
+    //---------------------------------------
+    // Name: contains
+    // PreCondition:  key is given
+    // PostCondition: Returns boolean of if it contains key
+    //---------------------------------------
     bool contains(const key_type& key) {
         
         // get hash function
@@ -234,16 +309,22 @@ public:
 
         // item not found
         return false;
+
     }
 
 
+    //---------------------------------------
+    // Name: position
+    // PreCondition:  key is provided
+    // PostCondition: Returns position of the next index or index of found value
+    //---------------------------------------
     size_t position(const key_type& key) const {
 
         // initial index
         size_t index =  Hash{}(key) % hashmap.size();
 
         // return if empty or found a matching key
-        if ((hashmap[index]).status == EMPTY || ((hashmap[index]).value == key && (hashmap[index]).status == FULL)) {
+        if ((hashmap[index]).status == EMPTY || ((hashmap[index]).value == key && (hashmap[index]).status != EMPTY)) {
             return index;
         }
 
@@ -251,7 +332,7 @@ public:
         int i = 1;
         while ((hashmap[index]).status != EMPTY) {
             index = (index + (i*i)) % hashmap.size();
-            if ((hashmap[index]).status == EMPTY || ( (hashmap[index]).value == key && (hashmap[index]).status == FULL) ) {
+            if ((hashmap[index]).status == EMPTY || ( (hashmap[index]).value == key && (hashmap[index]).status != EMPTY) ) {
                 return index;
             }
             i++;
@@ -261,6 +342,12 @@ public:
 
     }
 
+
+    //---------------------------------------
+    // Name: print_table
+    // PreCondition:  hashmap is given
+    // PostCondition: Returns printed list
+    //---------------------------------------
     void print_table(std::ostream& os=std::cout) const {
 
         // empty hashmap

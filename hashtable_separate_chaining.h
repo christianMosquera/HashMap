@@ -7,6 +7,20 @@
 #include <functional>
 #include <iostream>
 
+/*****************************************************
+ **
+ ** File:    hashtable_separate_chaining.h
+ ** Project: CSCE 221 Lab 6 Spring 2022
+ ** Author:  Christian Mosquera
+ ** Date:    04/11/22
+ ** Section: 510
+ ** Email:   cwbo.1701@tamu.edu
+ ** 
+ ** This file contains function definitions to the HashTable data
+ ** structure that uses separate chaining as a collision protocol.
+ **
+ *****************************************************/
+
 template <class Key, class Hash=std::hash<Key>>
 class HashTable {
 public:
