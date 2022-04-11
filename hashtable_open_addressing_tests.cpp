@@ -205,6 +205,17 @@ int main() {
     hash3 = hash2;
     hash2.insert(102);
     hash3.insert(102);
+    hash3.insert(103);
 
+    HashTable<int> table(11);
+    bool used[] = {false, false, false, false, false, false, false, false, false, false, false};
+    for (size_t n = 0; n < 5; n++) {
+        int value = 7 + n*11;
+        size_t index = table.position(value);
+        cout << used[index] << endl; //  this should always be false
+        table.insert(value);
+        
+        used[index] = true;
+    }
     return 0;
 }
