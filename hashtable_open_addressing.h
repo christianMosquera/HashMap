@@ -117,9 +117,17 @@ private:
 
 public:
     enum Status {FULL, EMPTY, ACTIVE};
+
+
     HashTable() : hashmap(11), count (0), currentLoad(0), maxLoad(0.5) {}
+
+
     HashTable(const HashTable& other) : hashmap(other.hashmap), count(other.count), currentLoad(other.currentLoad), maxLoad(other.maxLoad) {}
+
+
     ~HashTable() {}
+
+
     HashTable& operator=(const HashTable& other) {
 
         if (this == &other) {
@@ -132,17 +140,25 @@ public:
         return *this;
         
     }
+
+
     HashTable(size_type cells) : hashmap(cells), count(0), currentLoad(0), maxLoad(0.5) {}
+
 
     bool is_empty() const {
         return count == 0;
     }
+
+
     size_t size() const {
         return count;
     }
+
+    
     size_t table_size() const {
         return hashmap.size();
     }
+
 
     void make_empty() {
         for (Value& v : hashmap) {
@@ -150,6 +166,8 @@ public:
         }
         count = 0;
     }
+
+
     bool insert(const value_type& value) {
 
         // if contains return false
@@ -159,48 +177,31 @@ public:
 
         // get hash function
         size_t index = position(value);
-
-        // if current load greater than .5 rehash
         
+        // update the key
+        (hashmap[index]).value = value;
+        (hashmap[index]).status = FULL;
 
-        // check to see if full and insert if not
-        if ((hashmap[index]).status != FULL) {
-            // change value and status
-            (hashmap[index]).value = value;
-            (hashmap[index]).status = FULL;
-        }
-        else {
-            // loop to find next open spot
-            int i = 1;
-            while((hashmap[index]).status != EMPTY) {
-                index = (position(value) + (i * i)) % hashmap.size();
-                if ((hashmap[index]).status != FULL) {
-                    (hashmap[index]).value = value;
-                    (hashmap[index]).status = FULL;
-                    break;
-                }
-
-                i++;
-
-            }
-        }
-        
+        // update count and load factor
         count++;
         currentLoad = static_cast<float>(count) / hashmap.size();
 
+        // check to see if load factor is below .5
         if (currentLoad > maxLoad) {
-            // rehash
+
+            // find next prime
             size_t prime_num = nextPrime((hashmap.size() * 2));
 
+            // rehash using new size
             rehash(prime_num);
 
-            
         }
+
         return true;
 
-
-
     }
+
+
     size_t remove(const key_type& key) {
 
         // check if in index
@@ -210,30 +211,16 @@ public:
 
         // find index
         size_t index = position(key);
+
+        // update count and load factor
         count--;
         currentLoad = static_cast<float>(count) / hashmap.size();
+
         // delete element
-        if ((hashmap[index]).value == key) {
-
-            // deleting element
-            (hashmap[index]).status = ACTIVE;
-            return 1;
-
-        }
-
-        else {
-            int i = 1;
-            while ((hashmap[index]).status != EMPTY) {
-                index = (position(key) + (i * i)) % hashmap.size();
-                if ((hashmap[index]).value == key) {
-                    (hashmap[index]).status = ACTIVE;
-                    return 1;
-                }
-                i++;
-            }
-        }
+        (hashmap[index]).status = ACTIVE;
         return 1;
     }
+
 
     bool contains(const key_type& key) {
         
@@ -245,27 +232,38 @@ public:
             return true;
         }
 
+        // item not found
+        return false;
+    }
+
+
+    size_t position(const key_type& key) const {
+
+        // initial index
+        size_t index =  Hash{}(key) % hashmap.size();
+
+        // return if empty or found a matching key
+        if ((hashmap[index]).status == EMPTY || ((hashmap[index]).value == key && (hashmap[index]).status == FULL)) {
+            return index;
+        }
+
+        // loop to find next available index or to find the key
         int i = 1;
         while ((hashmap[index]).status != EMPTY) {
-            index = (position(key) + (i * i)) % hashmap.size();
-            if ((hashmap[index]).value == key && (hashmap[index]).status == FULL) {
-                return true;
+            index = (index + (i*i)) % hashmap.size();
+            if ((hashmap[index]).status == EMPTY || ( (hashmap[index]).value == key && (hashmap[index]).status == FULL) ) {
+                return index;
             }
             i++;
         }
 
-        return false;
+        return index;
 
-        // if not there go to next and loop while active or full
-
-        // if hits empty return false
-    }
-    size_t position(const key_type& key) const {
-        return Hash{}(key) % hashmap.size();
     }
 
     void print_table(std::ostream& os=std::cout) const {
-                // empty hashmap
+
+        // empty hashmap
         if (this->count == 0) {
             os << "<empty>\n";
             return;
@@ -281,8 +279,6 @@ public:
                 os << v.value;
             }
             
-
-
             os << std::endl;
             i++;
         }
